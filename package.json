@@ -1,7 +1,7 @@
 {
-  "name": "hyperx-keybind",
+  "name": "hx-keybind",
   "version": "1.0.0",
-  "description": "Bind actions to HyperX Cloud II inputs",
+  "description": "Bind actions to HX Cloud II inputs",
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js"
