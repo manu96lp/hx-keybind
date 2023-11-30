@@ -1,0 +1,14 @@
+.eslintrc
+.github
+.jshintrc
+.travis.yml
+.vscode
+.mailmap
+appveyor.yml
+build/
+coverage
+node_modules
+npm-debug.log
+package-lock.json
+Release/
+prebuilds

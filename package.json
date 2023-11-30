@@ -1,0 +1,16 @@
+{
+  "name": "hyperx-keybind",
+  "version": "1.0.0",
+  "description": "Bind actions to HyperX Cloud II inputs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "author": "Manu",
+  "license": "ISC",
+  "dependencies": {
+    "node-hid": "^2.1.2",
+    "robotjs": "^0.6.0",
+    "win-audio": "^2.0.2"
+  }
+}

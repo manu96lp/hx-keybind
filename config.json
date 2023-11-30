@@ -1,0 +1,21 @@
+{
+    "beepLength": 100,
+    "captureDelay": 2000,
+    "actions": [
+        {
+            "type": "keyboard",
+            "value": "audio_play",
+            "events": ["mute-button", "audio-scroll"]
+        },
+        {
+            "type": "keyboard",
+            "value": "audio_next",
+            "events": ["mute-button", "audio-scroll", "audio-scroll"]
+        },
+        {
+            "type": "mouse",
+            "value": "left",
+            "events": ["mute-button", "audio-scroll", "audio-scroll", "audio-scroll"]
+        }
+    ]
+}
