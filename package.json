@@ -12,5 +12,15 @@
     "node-hid": "^2.1.2",
     "robotjs": "^0.6.0",
     "win-audio": "^2.0.2"
+  },
+  "pkg": {
+    "scripts": "src/*",
+    "assets": [
+      "package.json",
+      "config.json",
+      "node_modules/**/*"
+    ],
+    "targets": [ "node18-win-x64" ],
+    "output": "HX Keybind.exe"
   }
 }
