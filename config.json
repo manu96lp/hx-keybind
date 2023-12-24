@@ -5,17 +5,17 @@
         {
             "type": "keyboard",
             "value": "audio_play",
-            "events": ["mute-button", "audio-scroll"]
+            "events": ["mute-button", "mute-button"]
         },
         {
             "type": "keyboard",
             "value": "audio_next",
-            "events": ["mute-button", "audio-scroll", "audio-scroll"]
+            "events": ["mute-button", "audio-scroll"]
         },
         {
             "type": "mouse",
             "value": "left",
-            "events": ["mute-button", "audio-scroll", "audio-scroll", "audio-scroll"]
+            "events": ["audio-scroll"]
         }
     ]
 }
