@@ -1,8 +1,10 @@
+const fs = require('fs');
+const childProcess = require("child_process");
 const hid = require('node-hid');
 const winAudio = require('win-audio');
 const robot = require('robotjs');
-const childProcess = require("child_process");
-const config = require('../config.json');
+
+let configParameters = null;
 
 const deviceInputs = [
     {
@@ -15,7 +17,7 @@ const deviceInputs = [
     {
         product: 'HyperX Cloud II Wireless',
         type: 'mute-button',
-        signature: [10, 0, 0, 3],
+        signature: [11, 0, 187, 8],
         usage: 1,
         usagePage: 65299,
     },
@@ -41,6 +43,17 @@ function playBeep(ms) {
         childProcess.exec(`powershell.exe [console]::beep(500,${ms})`);
     }
 }
+
+function loadConfig() {
+    try {
+        const fileContent = fs.readFileSync('./config.json', 'utf8');
+        const parsedConfig = JSON.parse(fileContent);
+
+        return parsedConfig;
+    } catch {
+        return null;
+    }
+}  
 
 function matchEventSignature(baseSign, eventSign) {
     if (!eventSign?.length) {
@@ -78,20 +91,24 @@ function getInspectableDevices() {
 }
 
 function processEventList() {
-    let actionToExecute;
+    let actionToExecute = null;
 
-    for (let i = 0, j = 0; i < config.actions.length; i++) {
-        if (config.actions[i].events.length !== eventList.list.length) {
+    for (let i = 0, j = 0; i < configParameters.actions.length; i++) {
+        if (configParameters.actions[i].events.length > eventList.list.length) {
             continue;
         }
 
-        actionToExecute = config.actions[i];
-
-        for (j = 0; j < eventList.list.length; j++) {
-            if (config.actions[i].events[j] !== eventList.list[j]) {
-                actionToExecute[i] = null;
+        actionToExecute = configParameters.actions[i];
+        
+        for (j = 0; j < configParameters.actions[i].events.length; j++) {
+            if (configParameters.actions[i].events[j] !== eventList.list[j]) {
+                actionToExecute = null;
                 break;
             }
+        }
+
+        if (actionToExecute !== null) {
+            break;
         }
     }
     
@@ -114,7 +131,7 @@ function processEventList() {
 function updateEventList(eventType) {
     const currentTime = Date.now();
 
-    if (currentTime - eventList.time > config.captureDelay) {
+    if (currentTime - eventList.time > configParameters.captureDelay) {
         eventList.list = [];
     }
 
@@ -125,7 +142,7 @@ function updateEventList(eventType) {
         clearTimeout(appState.processId);
     }
 
-    appState.processId = setTimeout(processEventList, config.captureDelay);
+    appState.processId = setTimeout(processEventList, configParameters.captureDelay);
 }
 
 async function inspectDevice(device, input) {
@@ -140,7 +157,7 @@ async function inspectDevice(device, input) {
         updateEventList(input.type);
 
         if (input.type === 'audio-scroll') {
-            playBeep(config.beepLength);
+            playBeep(configParameters.beepLength);
 
             winAudio.speaker.set(appState.previousVolume);
         }
@@ -183,7 +200,15 @@ async function main() {
     const devicesToInspect = getInspectableDevices();
 
     if (!devicesToInspect.length) {
-        throw new Error('No devices were found');
+        console.error('No devices were found.');
+        return 1;
+    }
+
+    configParameters = loadConfig();
+
+    if (!configParameters) {
+        console.error('Could not load configurations.');
+        return 1;
     }
 
     const tasksToRun = [
@@ -195,6 +220,20 @@ async function main() {
     });
 
     await runTaskManager(tasksToRun);
+
+    return 0;
 }
 
-main();
+main().then((exitCode) => {
+    console.log('Press any key to exit...');
+
+    process.exitCode = exitCode;
+    
+    process.stdin.resume();
+    process.stdin.setRawMode(true);
+
+    process.stdin.once('data', () => {
+        process.stdin.setRawMode(false);
+        process.stdin.pause();
+    });
+});
