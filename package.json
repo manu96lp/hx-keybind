@@ -2,9 +2,11 @@
   "name": "hx-keybind",
   "version": "1.0.0",
   "description": "Bind actions to HX Cloud II inputs",
-  "main": "index.js",
+  "main": "src/index.js",
+  "bin": "src/index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "build": "pkg ."
   },
   "author": "Manu",
   "license": "ISC",
@@ -14,13 +16,13 @@
     "win-audio": "^2.0.2"
   },
   "pkg": {
-    "scripts": "src/*",
     "assets": [
       "package.json",
-      "config.json",
       "node_modules/**/*"
     ],
+    "scripts": "src/*",
     "targets": [ "node18-win-x64" ],
-    "output": "HX Keybind.exe"
+    "output": "HX Keybind.exe",
+    "outputPath": "dist"
   }
 }
